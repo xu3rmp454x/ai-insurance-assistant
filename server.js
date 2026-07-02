@@ -70,8 +70,12 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n✅ AI 車險理賠輔助工具已啟動`);
-  console.log(`🌐 開啟瀏覽器：http://localhost:${PORT}\n`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`\n✅ AI 車險理賠輔助工具已啟動`);
+    console.log(`🌐 開啟瀏覽器：http://localhost:${PORT}\n`);
+  });
+}
+
+module.exports = app;
