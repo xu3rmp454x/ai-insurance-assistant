@@ -1,0 +1,19 @@
+{
+  "name": "ai-insurance-assistant",
+  "version": "1.0.0",
+  "description": "AI 車險理賠輔助工具 - 輸入事故描述，AI 協助分析理賠方向",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.55.0",
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

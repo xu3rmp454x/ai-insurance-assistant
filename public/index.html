@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 車險理賠輔助工具</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🛡️</span>
+        <div>
+          <h1>AI 車險理賠輔助工具</h1>
+          <p>輸入事故描述，AI 即時分析理賠方向</p>
+        </div>
+      </div>
+      <span class="badge">Powered by Claude AI</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="input-section">
+      <div class="card">
+        <label class="label" for="description">
+          📝 請描述您的事故情況
+        </label>
+        <p class="hint">越詳細越好，例如：時間、地點、雙方車速、碰撞位置、有無受傷、是否已報警</p>
+        <textarea
+          id="description"
+          class="textarea"
+          placeholder="例如：今天早上 8 點，我在台北市忠孝東路直行，一輛機車突然從巷子衝出，我來不及煞車，前保險桿撞到機車，機車騎士摔倒但說沒有受傷，我有拍照並叫警察來，雙方都有保險..."
+          rows="6"
+        ></textarea>
+
+        <div class="examples">
+          <span class="examples-label">快速範例：</span>
+          <button class="example-btn" onclick="fillExample(0)">追撞事故</button>
+          <button class="example-btn" onclick="fillExample(1)">停車場刮傷</button>
+          <button class="example-btn" onclick="fillExample(2)">路口碰撞</button>
+        </div>
+
+        <button id="analyzeBtn" class="btn-analyze" onclick="analyze()">
+          <span id="btnText">🔍 開始分析理賠</span>
+          <span id="btnLoading" class="hidden">⏳ AI 分析中...</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="resultSection" class="result-section hidden">
+      <div class="card">
+        <div class="result-header">
+          <h2>📊 理賠分析結果</h2>
+          <button class="btn-copy" onclick="copyResult()">📋 複製結果</button>
+        </div>
+        <div id="result" class="result-content"></div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>即時分析</h3>
+        <p>AI 串流輸出，秒級回應</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📚</span>
+        <h3>專業知識</h3>
+        <p>涵蓋台灣強制險、甲乙丙式車體險</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📋</span>
+        <h3>文件清單</h3>
+        <p>自動列出所需的理賠文件</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>⚠️ 本工具提供的分析僅供參考，不構成法律或保險專業建議，實際理賠依保單條款為準。</p>
+    <p>Built by <strong>李濬智</strong> · Powered by <strong>Anthropic Claude API</strong></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
