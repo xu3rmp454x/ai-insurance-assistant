@@ -125,6 +125,14 @@ function copyResult() {
   });
 }
 
+// Character counter
+const charCount = document.getElementById('charCount');
+textarea.addEventListener('input', () => {
+  const len = textarea.value.length;
+  charCount.textContent = len;
+  charCount.style.color = len < 10 ? '#ef4444' : len > 1000 ? '#ef4444' : '#6b7280';
+});
+
 // Allow Ctrl+Enter to submit
 textarea.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.key === 'Enter') analyze();
