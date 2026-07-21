@@ -2,6 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 小時
+  max: 10,                   // 每個 IP 最多 10 次
+  message: { error: '使用次數過多，請一小時後再試。' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const app = express();
 app.use(express.json());
@@ -48,7 +57,7 @@ const SYSTEM_PROMPT = `你是一位專業的台灣車險理賠顧問，擁有超
 請使用繁體中文，語氣親切專業，像經驗豐富的理賠人員耐心協助民眾。
 最後請務必加上免責聲明：以上分析僅供參考，實際理賠結果依保單條款及現場勘查為準。`;
 
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', limiter, async (req, res) => {
   const { description } = req.body;
 
   if (!description || description.trim().length < 10) {
