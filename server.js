@@ -64,6 +64,9 @@ app.post('/api/analyze', async (req, res) => {
   if (!description || description.trim().length < 10) {
     return res.status(400).json({ error: '請輸入較詳細的事故描述（至少 10 個字）' });
   }
+  if (description.trim().length > 1000) {
+    return res.status(400).json({ error: '事故描述過長，請控制在 1000 字以內。' });
+  }
 
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   const { success } = await ratelimit.limit(ip);
