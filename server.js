@@ -101,7 +101,13 @@ app.post('/api/analyze', async (req, res) => {
 
   } catch (err) {
     console.error('API error:', err.message);
-    res.write(`data: ${JSON.stringify({ error: err.message || '分析失敗，請稍後再試' })}\n\n`);
+    let userMessage = '系統發生錯誤，請稍後再試。';
+    if (err.message && err.message.includes('quota')) {
+      userMessage = 'AI 服務今日使用量已達上限，請明天再試。';
+    } else if (err.message && err.message.includes('503')) {
+      userMessage = 'AI 服務暫時繁忙，請稍後再試。';
+    }
+    res.write(`data: ${JSON.stringify({ error: userMessage })}\n\n`);
     res.end();
   }
 });
