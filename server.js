@@ -2,14 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const rateLimit = require('express-rate-limit');
+const { Ratelimit } = require('@upstash/ratelimit');
+const { Redis } = require('@upstash/redis');
 
-const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 小時
-  max: 10,                   // 每個 IP 最多 10 次
-  message: { error: '使用次數過多，請一小時後再試。' },
-  standardHeaders: true,
-  legacyHeaders: false,
+const ratelimit = new Ratelimit({
+  redis: new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  }),
+  limiter: Ratelimit.slidingWindow(10, '1 h'), // 每個 IP 每小時 10 次
 });
 
 const app = express();
@@ -57,11 +58,17 @@ const SYSTEM_PROMPT = `你是一位專業的台灣車險理賠顧問，擁有超
 請使用繁體中文，語氣親切專業，像經驗豐富的理賠人員耐心協助民眾。
 最後請務必加上免責聲明：以上分析僅供參考，實際理賠結果依保單條款及現場勘查為準。`;
 
-app.post('/api/analyze', limiter, async (req, res) => {
+app.post('/api/analyze', async (req, res) => {
   const { description } = req.body;
 
   if (!description || description.trim().length < 10) {
     return res.status(400).json({ error: '請輸入較詳細的事故描述（至少 10 個字）' });
+  }
+
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const { success } = await ratelimit.limit(ip);
+  if (!success) {
+    return res.status(429).json({ error: '使用次數過多，請一小時後再試。' });
   }
 
   res.setHeader('Content-Type', 'text/event-stream');
