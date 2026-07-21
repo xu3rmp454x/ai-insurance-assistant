@@ -62,6 +62,16 @@ async function analyze() {
 
     if (!response.ok) {
       const err = await response.json();
+      if (response.status === 429) {
+        resultEl.innerHTML = `
+          <div style="text-align:center; padding: 2rem;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">⏳</div>
+            <p style="font-size:1.1rem; font-weight:bold; color:#b45309;">使用次數已達上限</p>
+            <p style="color:#92400e; margin-top:0.5rem;">每小時最多可查詢 10 次，請稍後再試。</p>
+          </div>`;
+        setLoading(false);
+        return;
+      }
       throw new Error(err.error || '伺服器錯誤');
     }
 
